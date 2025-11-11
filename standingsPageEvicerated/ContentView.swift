@@ -104,7 +104,6 @@ struct ContentView: View {
                             let standing = try! document.select("tbody tr:eq(\($0)) .pos")
                             let pts = try! document.select("tbody tr:eq(\($0)) .total-points")
                             let person = try! document.select("tbody tr:eq(\($0)) .visible-desktop-up")
-                            let shortPerson = try! document.select("tbody tr:eq(\($0)) .visible-desktop-down")
                             let abrv = try! document.select("tbody tr:eq(\($0)) .visible-desktop-down")
                             
                             let activeDriver = drivers.last {$0.name == "\(try! abrv.text())"}
@@ -116,12 +115,9 @@ struct ContentView: View {
                                 let html = try? String(contentsOf: url, encoding: .utf8)
                                 let document = try! SwiftSoup.parse(html ?? "")
                         
-                                let firstName = try! document.select("div .f1-driver-detail--name")
-                                let lastName = try! document.select("div.row div.teams-driver-item:eq(0) div.last-name span")
-                                let number = try! document.select("div.row div.teams-driver-item:eq(0) .driver-carno")
-
+                                let name = try! document.select("div .f1-driver-detail--name")
                                 
-                                Text("\(try! firstName.text())")
+                                Text("\(try! name.text())")
 
                             } label: {
                                 GridRow {
@@ -154,18 +150,8 @@ struct ContentView: View {
     }
 }
 
-struct DriverView: View {
-    
-    var body: some View {
-        Text("hello world :(")
-//        let url = URL (string: "https://www.f1academy.com/Racing-Series/Drivers")!
-//        let html = try? String(contentsOf: url, encoding: .utf8)
-//        let document = try! SwiftSoup.parse(html ?? "")
-//        
-//        let firstName = try! document.select("div.row div.teams-driver-item:eq(\(driver.personValue)) .first-name")
-//        let lastName = try! document.select("div.row div.teams-driver-item:eq(\(driver.personValue)) div.last-name span")
-//        let number = try! document.select("div.row div.teams-driver-item:eq(\(driver.personValue)) .driver-carno")
-//        
+
+
 //        ScrollView {
 //            LazyVStack (pinnedViews: .sectionHeaders) {
 //                VStack{
@@ -234,8 +220,6 @@ struct DriverView: View {
 //                }
 //            }
 //        }
-    }
-}
 
 
 
