@@ -20,7 +20,7 @@ var race = UIColor(hue: 0/360, saturation: 0/100, brightness: 88/100, alpha: 1)
 var pinky = UIColor(hue: 323/360, saturation: 45/100, brightness: 91/100, alpha: 1)
 
 
-struct Driver: Identifiable {
+struct Driver: Identifiable, Hashable {
     let personValue: Int
     let name: String
     let id = UUID()
@@ -101,37 +101,35 @@ struct ContentView: View {
                     Grid(alignment: .leading, horizontalSpacing: 1, verticalSpacing: 25){
                         
                         ForEach(0...24, id: \.self) {
-                            let standing = try! document.select("tbody tr:eq(\($0)) .pos")
-                            let pts = try! document.select("tbody tr:eq(\($0)) .total-points")
-                            let person = try! document.select("tbody tr:eq(\($0)) .visible-desktop-up")
-                            let abrv = try! document.select("tbody tr:eq(\($0)) .visible-desktop-down")
-                            
-                            let activeDriver = drivers.last {$0.name == "\(try! abrv.text())"}
+                            let standing = "\(try! document.select("tbody tr:eq(\($0)) .pos").text())"
+                            let pts = "\(try! document.select("tbody tr:eq(\($0)) .total-points").text())"
+                            let person = "\(try! document.select("tbody tr:eq(\($0)) .visible-desktop-up").text())"
+                            let abrv = "\(try! document.select("tbody tr:eq(\($0)) .visible-desktop-down").text())"
+                            let histno = drivers.last {$0.name == abrv}?.personValue
 
-                            let histno = activeDriver?.personValue
-                            
                             NavigationLink {
+                                //This is what the Navigation link displays (the driver page)
                                 let url = URL (string: "https://www.f1academy.com/Racing-Series/Drivers/\(histno ?? 0)/THISWEBSITEISSOSTUPID")!
                                 let html = try? String(contentsOf: url, encoding: .utf8)
                                 let document = try! SwiftSoup.parse(html ?? "")
-                        
-                                let name = try! document.select("div .f1-driver-detail--name")
+                                let name = "\(try! document.select("div .f1-driver-detail--name").text())"
                                 
-                                Text("\(try! name.text())")
+                                Text(name)
 
                             } label: {
+                                //This is what the navigation link looks like on the standing's page
                                 GridRow {
-                                    Text("\(try! standing.text())")
+                                    Text(standing)
                                         .padding(.leading, 5)
                                         .padding(.trailing, 20)
-                                    Image("\(try! abrv.text())" + "_headshot")
+                                    Image(abrv + "_headshot")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 40, height: 40)
                                         .padding(.trailing, 15)
-                                    Text("\(try! person.text())")
+                                    Text(person)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("\(try! pts.text())")
+                                    Text(pts)
                                         .frame(alignment: .trailing)
                                     Image(systemName: "chevron.right")
                                         .foregroundStyle(Color(.gray))
