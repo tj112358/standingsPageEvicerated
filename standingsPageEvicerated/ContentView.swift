@@ -6,6 +6,7 @@
 //
 import SwiftUI
 import SwiftSoup
+internal import Combine
 
 //This is white
 var jet = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
@@ -25,6 +26,12 @@ struct Driver: Identifiable, Hashable {
     let name: String
     let id = UUID()
 }
+
+//class Femininominom: ObservableObject {
+//    @Published var name = ""
+//}
+
+
 
 struct ContentView: View {
     
@@ -90,10 +97,14 @@ struct ContentView: View {
             Driver(personValue: 59, name: "") //empty page!!!
         ]
     
+//    @StateObject var settings = Femininominom()
+    
     var body: some View {
         let url = URL (string: "https://www.f1academy.com/Racing-Series/Standings/Driver")!
         let html = try? String(contentsOf: url, encoding: .utf8)
         let document = try! SwiftSoup.parse(html ?? "")
+        
+        
         
         NavigationView{
             ScrollView{
@@ -114,7 +125,10 @@ struct ContentView: View {
                                 let document = try! SwiftSoup.parse(html ?? "")
                                 let name = "\(try! document.select("div .f1-driver-detail--name").text())"
                                 
-                                Text(name)
+                                ScrollView {
+                                    Text(name)
+                                    DriverView()
+                                }
 
                             } label: {
                                 //This is what the navigation link looks like on the standing's page
@@ -145,7 +159,17 @@ struct ContentView: View {
             }
             .padding(20)
         }
+//        .environmentObject(settings)
     }
+}
+
+struct DriverView: View {
+//    let driver: Driver
+//    @EnvironmentObject var settings: Femininominom
+    
+        var body: some View {
+            Text("Name: ")
+        }
 }
 
 
